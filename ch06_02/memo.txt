@@ -9,3 +9,5 @@ openssl req -new -nodes -sha256 -key server.key -out server.csr -config ./openss
 # --> Common Name に localhost を入力する
 openssl x509 -req -days 365 -in server.csr -sha256 -out server.crt -CA ca.crt -CAkey ca.key -CAcreateserial -extfile ./openssl.cnf -extensions Server
 
+curl https://localhost:18443
+curl --cacert ca.crt https://localhost:18443
