@@ -359,6 +359,7 @@ keyUsage=digitalSignature,keyCertSign,cRLSign
 basicConstraints=CA:FALSE
 keyUsage=digitalSignature,dataEncipherment
 extendedKeyUsage=serverAuth
+subjectAltName=DNS:localhost
 
 [Client]
 basicConstraints=CA:FALSE
