@@ -45,7 +45,7 @@ func handlerUpgrade(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handlerUpgrade)
+	http.HandleFunc("/upgrade", handlerUpgrade)
 	err := http.ListenAndServe(":18888", nil)
 	log.Println(err)
 }
