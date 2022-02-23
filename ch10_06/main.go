@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/oauth2"
@@ -72,6 +73,7 @@ func main() {
 	}
 	client := oauth2.NewClient(context.Background(), conf.TokenSource(context.Background(), token))
 	getEmail(client)
+	createGist(client)
 }
 
 func getEmail(client *http.Client) {
@@ -84,5 +86,34 @@ func getEmail(client *http.Client) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Print(string(emails))
+	fmt.Println(string(emails))
+}
+
+func createGist(client *http.Client) {
+	gist := `{
+		"description": "API example",
+		"public": true,
+		"files": {
+			"hello_from_rest_api.txt": {
+				"content": "Hello World!"
+			}
+		}
+	}`
+	resp2, err := client.Post("https://api.github.com/gists", "application/json", strings.NewReader(gist))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(resp2.Status)
+	defer resp2.Body.Close()
+	type GistResult struct {
+		Url string `json:"html_url"`
+	}
+	gistResult := &GistResult{}
+	err = json.NewDecoder(resp2.Body).Decode(&gistResult)
+	if err != nil {
+		panic(err)
+	}
+	if gistResult.Url != "" {
+		open.Start(gistResult.Url)
+	}
 }
