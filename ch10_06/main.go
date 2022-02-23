@@ -4,7 +4,9 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -69,9 +71,18 @@ func main() {
 		panic(err)
 	}
 	client := oauth2.NewClient(context.Background(), conf.TokenSource(context.Background(), token))
-	doSomething(client)
+	getEmail(client)
 }
 
-func doSomething(client *http.Client) {
-
+func getEmail(client *http.Client) {
+	resp, err := client.Get("https://api.github.com/user/emails")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	emails, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(string(emails))
 }
